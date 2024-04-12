@@ -1,37 +1,50 @@
 
 
+
 import InputForm from "./components/inputForm";
 
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import {cookies } from 'next/headers';
+import { cookies } from 'next/headers';
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import AppFull from "./components/appFull";
+
+import DisplayChat from "./components/displayChat";
+import WelcomeModule from "./components/welcomeModule";
+
+import ChatsContainer from "./components/chatsContainer";
+
+const colors = [
+  '#fad1c0', // LightSalmon
+  '#FFDAB9', // PeachPuff
+  '#FFE4B5', // Moccasin
+  '#FAEBD7', // AntiqueWhite
+  '#FFEFD5' // PapayaWhip :)
+
+];
+
+
 
 export default async function Home() {
 
+
+
+
   const cookieStore = cookies();
-  const supabase = createServerComponentClient({cookies: () => cookieStore});
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  const {data: {user}} = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if(!user){
+
+
+  if (!user) {
+    return <WelcomeModule />
+  } else {
     return (
-      <main className='flex flex-col justify-center items-center px-3   w-full h-screen bg-zinc-200'>
-        <Link href='/login'>
-           You are not logged in. Click here to login
-        </Link>
-      </main>
-    )
+      <AppFull/>
+    );
   }
 
-  return (
-    <main className='flex flex-col justify-end items-center px-3   w-full h-screen bg-zinc-200'>
-      
-      <div className="flex sm:w-full md: w-8/12 mb-3 overflow-y">
-      <InputForm />
-      </div>
-      
-      
 
-    </main>
-  );
 }

@@ -11,6 +11,9 @@ import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline';
+
+
 
 const InputForm = () => {
 
@@ -24,6 +27,9 @@ const InputForm = () => {
     const [answer, setAnswer] = useState('');
     const [fields, setFields] = useState<FieldType[]>([]);
 
+    //textarea height
+    const [textareaHeight, setTextareaHeight] = useState('auto');
+
     useEffect(() => {
         // Add a default input field when the component mounts
         setFields([{ id: 1, type: 'input', value: '' }]);
@@ -34,6 +40,11 @@ const InputForm = () => {
             field.id === id ? { ...field, value: event.target.value } : field
         );
         setFields(updatedFields);
+
+        // Adjust textarea height based on content
+        setTextareaHeight('auto');
+        const textarea = event.target;
+        setTextareaHeight(`${textarea.scrollHeight}px`);
     };
 
     const handleAddInput = () => {
@@ -123,86 +134,93 @@ const InputForm = () => {
     return (
 
 
-        <div 
-        className=' bg-white  rounded-md flex flex-col justify-center w-full p-4 shadow-md' 
+        <div
+            className=' bg-white  rounded-md flex flex-col justify-center w-full p-4 border border-gray-800'
         >
 
             {/* Render the answer with parsed code blocks */}
             {answer && (
                 <div style={{ maxWidth: '100%', wordWrap: 'break-word', paddingBlock: '22px' }}>
                     {parseAnswer(answer)}
-                <hr />
+                    <hr />
                 </div>
             )}
             <form onSubmit={handleSubmit}>
                 {fields.map((field, index) => (
                     <div key={field.id}>
-                        
+
                         {field.type === 'input' ? (
                             <input
-                            className='p-2 my-1 w-full rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500'
-                                
+                                className='p-2 my-1 w-full rounded-lg border border-gray-800 focus:outline-none focus:border-green-500'
+
                                 type="text"
                                 placeholder='Type Here...'
                                 value={field.value}
                                 onChange={(e) => handleChange(field.id, e)}
                             />
-                        ) : (
+                            ) : (
                             <textarea
                                 rows={6}
                                 placeholder='Type Here...'
-                                className='p-2 my-1 w-full rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500'
+                                className='p-2 my-1 w-full rounded-lg border border-gray-800 focus:outline-none focus:border-green-500'
                                 value={field.value}
+                                style={{ height: textareaHeight }}
                                 onChange={(e) => handleChange(field.id, e)}
                             />
                         )}
+                        
                         {index !== 0 && ( // Render delete button for non-default fields
-                            
+
                             <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'flex-end',
-                                marginBlock: '0px',
-                                padding: '0px',
-                                fontSize: '14px',
-                                cursor: 'pointer',
-                                color: 'red',
-                                marginTop: '-3px',
-                                marginBottom: '5px',
-                            
-                            }}>
-                                 <button 
-                            className='delete-button'
-                            type="button" 
-                            onClick={() => handleDelete(field.id)}
-                            style={{
-                                marginBlock: '0px',
-                                fontSize: '14px',
-                                cursor: 'pointer',
-                                color: 'red',
-                                
-                                
-                            }}> <span style={{ textDecoration: 'none' }}>Delete</span>
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                    marginBlock: '0px',
+                                    padding: '0px',
+                                    fontSize: '14px',
+                                    cursor: 'pointer',
+                                    color: 'red',
+                                    marginTop: '-3px',
+                                    marginBottom: '5px',
+
+                                }}>
+                                <button
+                                    className='delete-button'
+                                    type="button"
+                                    onClick={() => handleDelete(field.id)}
+                                    style={{
+                                        marginBlock: '0px',
+                                        fontSize: '14px',
+                                        cursor: 'pointer',
+                                        color: 'red',
+
+
+                                    }}>
+                                    <span style={{ textDecoration: 'none' }}>Delete</span>
                                 </button>
                             </div>
-                            
-                           
+
+
                         )}
-                        
+
                     </div>
                 ))}
                 <hr />
                 <div className='flex flex-row justify-lef gap-4 text-sm mt-3'>
-                <button className='hover:underline text-slate-600 hover:text-blue-500' type="button" onClick={handleAddInput}>
-                    + Add Input</button>
-                <button className='hover:underline text-slate-600 hover:text-blue-500' type="button" onClick={handleAddTextarea}>+ Add Textarea</button>
+                    <button className='hover:underline text-slate-600 hover:text-blue-500' type="button" onClick={handleAddInput}>
+                        + Add Input</button>
+                    <button className='hover:underline text-slate-600 hover:text-blue-500' type="button" onClick={handleAddTextarea}>+ Add Textarea</button>
                 </div>
-                
-                
+
+
                 <div className='flex justify-end'>
-                    <button className='bg-slate-700 text-white p-2 rounded-md' type="submit">Submit</button>
+                    <button className='flex flex-row items-center justify-between px-14 bg-black text-white  h-auto 
+                    hover:px-8 hover:h-auto hover:bg-white hover:border hover:border-black hover:text-black hover:w-48 
+                    active:bg-black active:border active:border-black active:text-white active:w-48
+                    ease-in-out duration-300 rounded-md w-48' type="submit">
+                        <span>Send</span> <ArrowLongRightIcon className='h-8 w-6' /></button>
                 </div>
-                
+
             </form>
 
         </div>
